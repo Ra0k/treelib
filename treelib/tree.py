@@ -162,9 +162,9 @@ class Tree(object):
         reverse=False,
         line_type="ascii-ex",
         data_property=None,
-        get_label=None,
         sorting=True,
         func=print,
+        get_label=None,
     ):
         """
         Another implementation of printing tree using Stack
@@ -191,26 +191,27 @@ class Tree(object):
         level.
         """
         # Factory for proper get_label() function
-        if not get_label:
+        if get_label is None:
             if data_property:
                 if idhidden:
                     get_label = lambda node: getattr(node.data, data_property)
-    
+
                 else:
                     get_label = lambda node: "%s[%s]" % (
-                            getattr(node.data, data_property),
-                            node.identifier,
-                        )
-    
+                        getattr(node.data, data_property),
+                        node.identifier,
+                    )
+
             else:
                 if idhidden:
                     get_label = lambda node: node.tag
-    
+
                 else:
                     get_label = lambda node: "%s[%s]" % (node.tag, node.identifier)
 
         # legacy ordering
         if sorting and key is None:
+
             def key(node):
                 return node
 
@@ -872,6 +873,7 @@ class Tree(object):
         data_property=None,
         stdout=True,
         sorting=True,
+        get_label=None,
     ):
         """
         Print the tree structure in hierarchy style.
@@ -898,6 +900,7 @@ class Tree(object):
         :param sorting: if True perform node sorting, if False return
             nodes in original insertion order. In latter case @key and
             @reverse parameters are ignored.
+        :param get_label: overwrites the label generation
         :return: None
         """
         self._reader = ""
@@ -917,6 +920,7 @@ class Tree(object):
                 data_property,
                 sorting,
                 func=write,
+                get_label=get_label,
             )
         except NodeIDAbsentError:
             print("Tree is empty")
