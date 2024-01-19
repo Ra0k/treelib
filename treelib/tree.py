@@ -162,6 +162,7 @@ class Tree(object):
         reverse=False,
         line_type="ascii-ex",
         data_property=None,
+        get_label=None,
         sorting=True,
         func=print,
     ):
@@ -190,34 +191,26 @@ class Tree(object):
         level.
         """
         # Factory for proper get_label() function
-        if data_property:
-            if idhidden:
-
-                def get_label(node):
-                    return getattr(node.data, data_property)
-
+        if not get_label:
+            if data_property:
+                if idhidden:
+                    get_label = lambda node: getattr(node.data, data_property)
+    
+                else:
+                    get_label = lambda node: "%s[%s]" % (
+                            getattr(node.data, data_property),
+                            node.identifier,
+                        )
+    
             else:
-
-                def get_label(node):
-                    return "%s[%s]" % (
-                        getattr(node.data, data_property),
-                        node.identifier,
-                    )
-
-        else:
-            if idhidden:
-
-                def get_label(node):
-                    return node.tag
-
-            else:
-
-                def get_label(node):
-                    return "%s[%s]" % (node.tag, node.identifier)
+                if idhidden:
+                    get_label = lambda node: node.tag
+    
+                else:
+                    get_label = lambda node: "%s[%s]" % (node.tag, node.identifier)
 
         # legacy ordering
         if sorting and key is None:
-
             def key(node):
                 return node
 
